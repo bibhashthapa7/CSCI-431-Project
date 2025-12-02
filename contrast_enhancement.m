@@ -10,7 +10,9 @@ function contrast_enhancement(dir_name)
     for img_index = 1: length(images)
         path = fullfile(dir_name, images(img_index).name);
 
-        rgb_img = im2double(imread(path));
+        rgb_img = load_and_orient_image(path);
+
+        rgb_img = im2double(rgb_img);
 
         lab_img = rgb2lab(rgb_img);
 
