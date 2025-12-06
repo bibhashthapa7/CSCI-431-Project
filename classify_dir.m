@@ -17,7 +17,7 @@ function classify_dir(in_dir,out_dir)
         figure('Position', [100, 100, 1400, 500]);
     
         subplot(1,4,1); 
-        imshow(rgb_img); 
+        imshow(img); 
         title('Original Image');
     
         subplot(1,4,2); 
@@ -29,7 +29,7 @@ function classify_dir(in_dir,out_dir)
         title('After Morphological Cleanup');
 
          subplot(1,4,4); 
-        imshow(rgb_img); 
+        imshow(img); 
         hold on;
         if ~isempty(centers)
             viscircles(centers, radii*2, 'Color', [1 0.5 0], 'LineWidth', 3);

@@ -9,7 +9,7 @@ function class_im = mahalanobis(im_rgb)
     %get the b channel
     b_channel = im_lab(:,:,3);
 
-    ab_channels = [a_channel; b_channel;];
+    ab_channels = [a_channel(:), b_channel(:)];
 
     mahal_fg  = ( mahal( ab_channels, fg_samples ) ) .^ (1/2);
     %creates a matrix of the mahalanobis dist between og and bg values
