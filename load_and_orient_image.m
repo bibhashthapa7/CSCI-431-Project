@@ -2,14 +2,14 @@ function rgb_img = load_and_orient_image(img_path)
     % Read the image
     rgb_img = imread(img_path);
     
-    % Get EXIF metadata
+    % Get metadata
     info = imfinfo(img_path);
     
-    % Check if Orientation field exists
+    % Check if orientation field exists
     if isfield(info, 'Orientation')
         orientation = info.Orientation;
         
-        % Apply rotation based on EXIF orientation
+        % Apply rotation based on orientation
         switch orientation
             case 1
                 % Normal

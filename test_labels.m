@@ -1,5 +1,5 @@
 function labels = test_labels()
-    % List images with markers from the TESTING dataset
+    % List images with markers from the testing dataset
     images_with_markers = {
         'A3.jpg', 'A7.jpg', 'A10.jpg', 'A23.jpg', ...
         'B18.jpg', 'B20.jpg', 'B23.jpg', 'B24.jpg', 'B33.jpg', 'B40.jpg', ...

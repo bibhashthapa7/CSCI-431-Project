@@ -1,7 +1,9 @@
+% Function that detects trail marker circles from binary mask
 function [centers, radii, metrics] = find_marker_circles(binary_mask)
     % Get blob properties
     props = regionprops(binary_mask, 'Area', 'Centroid', 'EquivDiameter');
     
+    % Return empty outputs if no circle is detected
     if isempty(props)
         centers = [];
         radii = [];
@@ -26,25 +28,27 @@ function [centers, radii, metrics] = find_marker_circles(binary_mask)
     [~, sort_idx] = sort([props(large_blob_indices).Area], 'descend');
     large_blob_indices = large_blob_indices(sort_idx);
     
-    % Use largest blob as primary marker
+    % Initialize outputs
     centers = [];
     radii = [];
     metrics = [];
     
+    % Use the largest blob as the primary marker
     largest_blob_idx = large_blob_indices(1);
     centers = [centers; props(largest_blob_idx).Centroid];
     radii = [radii; props(largest_blob_idx).EquivDiameter / 2];
     metrics = [metrics; 0.8];
     
-    % Include additional large blobs if significant
+    % Include additional large blobs as secondary markers
     max_markers = 2; 
     
     for i = 2:length(large_blob_indices)
-        % Stop if we have reached the maximum
+        % Stop if we have reached the maximum number of markers
         if length(radii) >= max_markers
             break;
         end
         
+        % Get the blob index
         blob_idx = large_blob_indices(i);
 
         % Detect large blobs only
