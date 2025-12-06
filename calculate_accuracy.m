@@ -77,6 +77,7 @@ function calculate_accuracy(detection_results, out_dir)
     h.FontSize = 14;
     
     saveas(gcf, fullfile(out_dir, 'confusion_matrix.png'));
+    pause(2);
     fprintf('Confusion matrix saved to: %s\n\n', fullfile(out_dir, 'confusion_matrix.png'));
     close;
 end

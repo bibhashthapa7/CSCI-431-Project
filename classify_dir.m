@@ -48,7 +48,7 @@ function classify_dir(in_dir, out_dir)
             imshow(clean_mask);
             title('After Cleanup');
             
-            subplot(1,4,4);
+            final_output = subplot(1,4,4);
             imshow(img);
             hold on;
             if ~isempty(centers)
@@ -58,8 +58,12 @@ function classify_dir(in_dir, out_dir)
             hold off;
             
             % Save result
-            saveas(gcf, fullfile(out_dir, images(index).name));
-            close;
+            frame = getframe(final_output);                 
+            out_path = fullfile(out_dir, images(index).name);
+            imwrite(frame.cdata, out_path);            
+
+            pause(2);
+            close();
             
         catch ME
             fprintf('  ERROR: %s\n\n', ME.message);
