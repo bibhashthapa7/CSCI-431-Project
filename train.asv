@@ -107,13 +107,10 @@ function train(training_enhanced_marker_dir,training_enhanced_no_dir)
 
         %creates a matrix of the random indices
         [X, Y] = meshgrid(y_rand_indices, x_rand_indices);
-        %gets the background indices
+        %gets the 
         bg_indices = sub2ind(size(a_channel), Y(:), X(:));
 
-        %stores the values from the a & b channel
         bg4_samples_random = [bg4_samples_random; [a_channel(bg_indices), b_channel(bg_indices)]];
     end
-
-    %saves the training data
     save("training_samples", 'fg_samples', 'bg1_samples', 'bg2_samples', 'bg3_samples', 'bg4_samples_random');
 end

@@ -36,14 +36,14 @@ function class_im = mahalanobis(im_rgb)
         return;
     end
     
-    %gets the mean of the foreground values
+    %gets the mean of the foreground distribution
     fg_dist_mean = mean(fg_classified_dist);
-    %gets the standard dev of the foreground values
+    %gets the standard dev of the fg va
     fg_dist_stdev = std(fg_classified_dist);
     
-    %keeps pixels that are classified as a fg and less than 1 stdev away
+    % Keep only confident foreground pixels
     guess_cls0 = (classified_mask == 1) & (abs(mahal_fg - fg_dist_mean) < 1.5*fg_dist_stdev);
     
-    %reshapes to the dimensions of the image
+    % Reshape to image dimensions
     class_im = reshape(guess_cls0, size(im_lab,1), size(im_lab,2));
 end
