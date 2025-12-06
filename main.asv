@@ -1,0 +1,62 @@
+function main()
+    is_training_dir = true;
+    to_train = true; %true to train interactive, false to load stored vals
+    is_enhanced = true;
+
+    directory = "training";
+    if ~is_training_dir
+        directory = "testing";
+    end
+    
+    if ~is_enhanced
+        contrast_enhancement(directory);
+    end
+    
+    if is_enhanced
+        img_path = fullfile(directory, "contrast_enhanced", "markers","A18.jpg");
+    else
+
+    im_path_enhanced_marker = fullfile(directory, "contrast_enhanced", "markers");
+    im_path_enhanced_no_marker = fullfile(directory, "contrast_enhanced", "background");
+
+    if to_train
+        train(img_path_enhanced_marker, im_path_enhanced_no_marker);
+    else
+
+    path_imgs = fullfile(directory, "contrast_enhanced");
+
+    % Read the image
+    rgb_img = load_and_orient_image(img_path);
+    
+    % Color detection using Mahalanobis 
+    yellow_mask_mahal = mahalanobis(rgb_img);
+
+    % Morphological cleanup
+    clean_mask = cleanup_mask(yellow_mask_mahal);
+
+    % Circle detection
+    [centers, radii, metrics] = find_marker_circles(clean_mask);
+    
+    % Visualize steps
+    figure('Position', [100, 100, 1400, 500]);
+    
+    subplot(1,4,1); 
+    imshow(rgb_img); 
+    title('Original Image');
+    
+    subplot(1,4,2); 
+    imshow(yellow_mask_mahal); 
+    title('Mahalanobis Color Detection');
+
+    subplot(1,4,3); 
+    imshow(clean_mask); 
+    title('After Morphological Cleanup');
+
+    subplot(1,4,4); 
+        imshow(rgb_img); 
+        hold on;
+        if ~isempty(centers)
+            viscircles(centers, radii*2, 'Color', [1 0.5 0], 'LineWidth', 3);
+        end
+        hold off;
+end

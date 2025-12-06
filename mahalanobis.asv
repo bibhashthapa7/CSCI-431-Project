@@ -1,0 +1,85 @@
+function class_im = mahalanobis(INTERACTIVE, im_rgb)
+    
+    %check if interactive flag is true
+    if  INTERACTIVE
+        %create a new figure at the position specified
+        figure('Position',[10 10 1024 768]);
+        %show the image in the scientific way
+        imagesc( im_rgb );
+        %add axis to the image
+        axis image;
+
+        %markers
+        fprintf('SELECT FOREGROUND OBJECT ... ');
+        fprintf('Click on points to capture positions:  Hit return to end...\n');
+        %stores the x and y values of the foreground captures
+        [x_fg, y_fg] = ginput();
+
+        %bg class 1 (leaves)
+        fprintf('SELECT BACKGROUND CLASS 1 leaves\n');
+        [x_bg1, y_bg1] = ginput();
+
+        %bg class 2 (rocks)
+        fprintf('SELECT BACKGROUND CLASS 2 trunks\n');
+        [x_bg2, y_bg2] = ginput();
+        save my_temporary_data;
+    else
+        load my_temporary_data;
+    end
+    
+    %transform the rgb image to lab
+    im_lab = rgb2lab( im_rgb );
+    
+    %get the a channel
+    a_channel = im_lab(:,:,2);
+    %get the b channel
+    b_channel = im_lab(:,:,3);
+
+    %creates a matrix that stores the x and y positions of the foreground
+    fg_indices  = sub2ind( size(im_lab), round(y_fg), round(x_fg) );
+    %creates a matrix that stores the a values of the foreground positions
+    fg_a = a_channel(fg_indices);
+    %creates a matrix that stores the b values of the foreground positions
+    fg_b = b_channel(fg_indices);
+    
+    %creates a matrix that stores the x and y positions of the background
+    bg1_indices  = sub2ind(size(im_lab), round(y_bg1), round(x_bg1));
+    %creates a matrix that stores the a values of the background positions
+    bg1_a = a_channel(bg1_indices);
+    %creates a matrix that stores the b values of the background positions
+    bg1_b = b_channel(bg1_indices);
+
+    bg2_indices = sub2ind(size(im_lab), round(y_bg2), round(x_bg2) );
+    bg2_a = a_channel(bg2_indices);
+    bg2_b = b_channel(bg2_indices);
+
+    %creates a matrix with the original a and b values
+    ab_channels = [a_channel(:), b_channel(:)];
+    %creates a matrix with the foreground's a and b values
+    fg_ab = [fg_a(:), fg_b(:)];
+    %creates a matrix with the background's a and b values
+    bg1_ab = [bg1_a(:), bg1_b(:)];
+    bg2_ab = [bg2_a(:), bg2_b(:)];
+
+    %creates a matrix of the mahalanobis dist between og and fg values
+    %we take the square root because mahal function returns dist squared
+    mahal_fg    = ( mahal( ab_channels, fg_ab ) ) .^ (1/2);
+    %creates a matrix of the mahalanobis dist between og and bg values
+    mahal_bg1    = ( mahal( ab_channels, bg1_ab ) ) .^ (1/2);
+
+    mahal_bg2    = ( mahal( ab_channels, bg2_ab ) ) .^ (1/2);
+
+    distances = [mahal_fg, mahal_bg1, mahal_bg2
+    [min_values, classified_mask] = min(distances, [], 2);
+    
+    fg_classified_dist = mahal_fg(classified_mask == 1);
+
+    fg_dist_mean = mean(fg_classified_dist);
+    fg_dist_stdev = std(fg_classified_dist);
+    threshold = fg_dist_mean + 1.
+
+
+    %reshape the classification result back to original image size
+    class_im = reshape( guess_cls0, size(im_lab,1), size(im_lab,2));
+end
+
