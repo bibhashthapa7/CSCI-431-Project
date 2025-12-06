@@ -1,6 +1,6 @@
 function main()
-    is_training_dir = true;
-    to_train = true; %true to train interactive, false to load stored vals
+    is_training_dir = false;
+    to_train = false; %true to train interactive, false to load stored vals
     is_enhanced = true;
 
     directory = "training";
@@ -16,11 +16,12 @@ function main()
     im_path_enhanced_no_marker = fullfile(directory, "contrast_enhanced", "background");
 
     if to_train
-        train(img_path_enhanced_marker, im_path_enhanced_no_marker);
+        train(im_path_enhanced_marker, im_path_enhanced_no_marker);
     else
 
     if ~is_training_dir
         path_imgs = fullfile(directory, "contrast_enhanced");
-        classify_dir();
+        out_dir =fullfile(directory, "out");
+        classify_dir(path_imgs, out_dir);
     end
 end

@@ -3,12 +3,12 @@ function classify_dir(in_dir,out_dir)
         mkdir(out_dir);
     end
 
-    images = dir(fullfille(in_dir, '*jpg'));
+    images = dir(fullfile(in_dir, '*jpg'));
 
     for index = 1:length(images)
         img = imread(fullfile(in_dir, images(index).name));
 
-        yellow_mask_mahal = mahalanobis(rgb_img);
+        yellow_mask_mahal = mahalanobis(img);
         clean_mask = cleanup_mask(yellow_mask_mahal);
         % Circle detection
         [centers, radii, metrics] = find_marker_circles(clean_mask);

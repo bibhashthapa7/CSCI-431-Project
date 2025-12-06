@@ -25,7 +25,7 @@ function train(training_enhanced_marker_dir,training_enhanced_no_dir)
     bg4_samples_random = [];
 
     no_marker_imgs = dir(fullfile(training_enhanced_no_dir, '*.jpg'));
-    total_images = min(length(no_marker_imgs), 10);
+    total_images = min(length(no_marker_imgs), 5);
     
     for class = 1:3
         random_indices = randperm(length(no_marker_imgs), total_images);
@@ -71,7 +71,7 @@ function train(training_enhanced_marker_dir,training_enhanced_no_dir)
             y_rand_indices = randperm(size(a_channel,2), 200);
 
             [X, Y] = meshgrid(y_rand_indices, x_rand_indices);
-            bg_indices = sub2ind(size(a_channel), x(:), y(:));
+            bg_indices = sub2ind(size(a_channel), Y(:), X(:));
 
             bg4_samples_random = [bg4_samples_random; [a_channel(bg_indices), b_channel(bg_indices)]];
     end
